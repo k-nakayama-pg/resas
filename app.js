@@ -112,6 +112,7 @@ function create_push_options(user_id, text) {
     body: data
   };
 
+  console.log('===== options =====\n' + options );
   return options;
 }
 
