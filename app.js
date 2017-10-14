@@ -137,40 +137,52 @@ function create_push_help_message(user_id, text) {
     };
   }
 
-  // LINEの友達に助けてほしいメッセージリクエストを作成
-  function create_push_tasukeru_message(user_id, text) {
-    //ヘッダーを定義
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
-    };
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
 
-    // 送信データ作成
-    var data;
-    if (text != null) {
-      data = {
-        'to': user_id,
-        "messages": [{
-          'type': "template",
-          "altText": "this is a buttons template",
-          "template": {
-            "type": "confirm",
-            "text": text,
-            "actions": [{
-                "type": "message",
-                "label": "助けてー",
-                "text": "助けてー"
-              },
-              {
-                "type": "message",
-                "label": "大丈夫！",
-                "text": "大丈夫！"
-              }
-            ]
-          }
-        }]
-      };
-    }
+  console.log('===== options =====\n' + options);
+  return options;
+}
+
+// LINEの友達に助けてほしいメッセージリクエストを作成
+function create_push_tasukeru_message(user_id, text) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data;
+  if (text != null) {
+    data = {
+      'to': user_id,
+      "messages": [{
+        'type': "template",
+        "altText": "this is a buttons template",
+        "template": {
+          "type": "confirm",
+          "text": text,
+          "actions": [{
+              "type": "message",
+              "label": "助けてー",
+              "text": "助けてー"
+            },
+            {
+              "type": "message",
+              "label": "大丈夫！",
+              "text": "大丈夫！"
+            }
+          ]
+        }
+      }]
+    };
+  }
 
   //オプションを定義
   var options = {
