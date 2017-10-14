@@ -70,27 +70,6 @@ app.post('/callback', function(req, res) {
             }
           });
         }
-        // 1対1のチャットの場合は相手のユーザ名で返事をする
-        // グループチャットの場合はユーザ名が分からないので、「貴様ら」で返事をする
-        if (req.body['events'][0]['source']['type'] == 'user') {
-          // ユーザIDでLINEのプロファイルを検索して、ユーザ名を取得する
-          var user_id = req.body['events'][0]['source']['userId'];
-          var get_profile_options = {
-            url: 'https://api.line.me/v2/bot/profile/' + user_id,
-            json: true,
-            headers: {
-              'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}'
-            }
-          };
-          request.get(get_profile_options, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-              console.log(body['displayName'] + ':' + user_id);
-              callback(create_options(body['displayName'] + ':' + req.body['events'][0]['message']['text'], req.body));
-            }
-          });
-        } else if ('room' == req.body['events'][0]['source']['type']) {
-          callback(create_options('グループ' + ':' + req.body['events'][0]['message']['text'], req.body));
-        }
       },
     ],
     function(options) {
