@@ -35,7 +35,7 @@ app.post('/callback', function(req, res) {
 
         if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
           console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
-          request.post(create_push_help_message(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
+          request.post(create_push_help_message(global.nakayama_kazuya_line_id, "近くに困っている人がいます。"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
@@ -44,14 +44,14 @@ app.post('/callback', function(req, res) {
           });
         } else if (req.body['events'][0]['type'] == 'beacon') {
           console.log('===== 助けてほしい人が実機のビーコンをオンにしました =====');
-          request.post(create_push_help_message(req.body['events'][0]["source"]["userId"], "近くに助けてほしい人がいます"), function(error, response, body) {
+          request.post(create_push_help_message(req.body['events'][0]["source"]["userId"], "近くに困っている人がいます。"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
               console.log('error: ' + JSON.stringify(response));
             }
           });
-        } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
+        } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('任せて！') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
           request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -114,13 +114,13 @@ function create_push_help_message(user_id, text) {
           "text": text,
           "actions": [{
               "type": "message",
-              "label": "Yes",
-              "text": "はい、助けます。"
+              "label": "任せて！",
+              "text": "任せて！"
             },
             {
               "type": "message",
-              "label": "No",
-              "text": "すみません、今は無理です。"
+              "label": "今無理。。。",
+              "text": "今無理。。。"
             }
           ]
         }
