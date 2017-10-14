@@ -21,6 +21,9 @@ app.post('/callback', function(req, res) {
   async.waterfall([
       function(callback) {
 
+        console.log(req.body);
+        console.log(req.body['events'][0]['message']);
+
         // リクエストがLINE Platformから送られてきたか確認する
         if (!validate_signature(req.headers['x-line-signature'], req.body)) {
           return;
@@ -166,15 +169,51 @@ function create_push_can_help_message(user_id, text) {
             "actions": [{
                 "type": "postback",
                 "label": "中山一哉さん, 男性, 25歳",
-                "data": "itemid=nakayama"
+                "data": "help_user_id=nakayama"
               },
               {
                 "type": "postback",
                 "label": "美樹子さん, 女性",
-                "data": "itemid=tanji"
+                "data": "help_user_id=mikiko"
               }
             ]
           }
+        }
+      ]
+    };
+  }
+
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
+
+  console.log('===== options =====\n' + options);
+  return options;
+}
+
+// LINEの助けてくれる友達リストのメッセージリクエストを作成
+function create_push_can_help_location_message(user_id, text) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data;
+  if (text != null) {
+    data = {
+      'to': user_id,
+      "messages": [{
+          'type': "location",
+          "title": user_id + "さんの位置情報",
+          "address": "〒261-0014 千葉県千葉市美浜区若葉3丁目１－２１ 幕張neighborhoodPOD",
+          "latitude": 35.647885,
+          "longitude": 140.046072
         }
       ]
     };
