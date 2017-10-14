@@ -42,6 +42,15 @@ app.post('/callback', function(req, res) {
               console.log('error: ' + JSON.stringify(response));
             }
           });
+        } else if (req.body['events'][0]['type'] == 'beacon') {
+          console.log('===== 助けてほしい人が実機のビーコンをオンにしました =====');
+          request.post(create_push_help_message(req.body['events'][0]["source"]["userId"], "近くに助けてほしい人がいます"), function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            } else {
+              console.log('error: ' + JSON.stringify(response));
+            }
+          });
         } else if (req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
           request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
@@ -218,13 +227,12 @@ function create_push_can_help_location_message(user_id, text) {
     data = {
       'to': global.nakamura_shigeki_line_id,
       "messages": [{
-          'type': "location",
-          "title": user_id + "さんの位置情報",
-          "address": "〒261-0014 千葉県千葉市美浜区若葉3丁目１－２１ 幕張neighborhoodPOD",
-          "latitude": 35.647885,
-          "longitude": 140.046072
-        }
-      ]
+        'type': "location",
+        "title": user_id + "さんの位置情報",
+        "address": "〒261-0014 千葉県千葉市美浜区若葉3丁目１－２１ 幕張neighborhoodPOD",
+        "latitude": 35.647885,
+        "longitude": 140.046072
+      }]
     };
   }
 
