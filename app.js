@@ -53,7 +53,7 @@ app.post('/callback', function(req, res) {
           });
         } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('任せて！') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
-          request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
+          request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "近くでサポートしてくれる人がみつかりました！"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
@@ -162,7 +162,7 @@ function create_push_can_help_message(user_id, text) {
           "altText": "this is a buttons template",
           "template": {
             "type": "buttons",
-            "text": "助けてほしい人を選んでください",
+            "text": "近くのサポートしてくれる人",
             "actions": [{
                 "type": "postback",
                 "label": "中山一哉さん, 男性, 25歳",
