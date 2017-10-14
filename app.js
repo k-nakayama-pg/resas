@@ -42,6 +42,15 @@ app.post('/callback', function(req, res) {
               console.log('error: ' + JSON.stringify(response));
             }
           });
+        } else if (req.body['events'][0]['postback']['help_user_id'] != null && req.body['events'][0]['postback']['help_user_id'] != "") {
+          console.log('===== 助けてほしい人に選ばれました =====');
+          request.post(create_push_can_help_location_message(req.body['events'][0]['postback']['help_user_id'], ""), function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            } else {
+              console.log('error: ' + JSON.stringify(response));
+            }
+          });
         } else if (req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
           request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
