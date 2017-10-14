@@ -6,7 +6,8 @@ var crypto = require("crypto");
 var async = require('async');
 var fs = require('fs');
 
-
+global.nakayama_kazuya_line_id = 'U2aca57e8b1a096a56b1199ae5311f7e5';
+global.nakamura_shigeki_line_id = 'U4002d7027f26356aba3fecbb0e00f369';
 
 app.set('port', (process.env.PORT || 8000));
 // JSONの送信を許可
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.post('/callback', function(req, res) {
   async.waterfall([
       function(callback) {
+
         // リクエストがLINE Platformから送られてきたか確認する
         if (!validate_signature(req.headers['x-line-signature'], req.body)) {
           return;
@@ -29,7 +31,14 @@ app.post('/callback', function(req, res) {
         }
 
         if (req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
-          console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====')
+          console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
+          request.post(create_push_options(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            } else {
+              console.log('error: ' + JSON.stringify(response));
+            }
+          });
         }
         // 1対1のチャットの場合は相手のユーザ名で返事をする
         // グループチャットの場合はユーザ名が分からないので、「貴様ら」で返事をする
@@ -73,6 +82,37 @@ app.listen(app.get('port'), function() {
 // 署名検証
 function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
+}
+
+// LINEに送るリクエストを作成
+function create_push_options(user_id, text) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data;
+  if (text != null) {
+    data = {
+      'to': user_id,
+      "messages": [{
+        "type": "text",
+        "text": text
+      }]
+    };
+  }
+
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
+
+  return options;
 }
 
 // LINEに送るリクエストを作成
