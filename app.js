@@ -22,6 +22,8 @@ app.post('/callback', function(req, res) {
       function(callback) {
 
         console.log(req.body);
+        console.log('message:' + req.body['events'][0]['message']);
+        console.log('message:' + req.body['events'][0]['source']);
 
         // リクエストがLINE Platformから送られてきたか確認する
         if (!validate_signature(req.headers['x-line-signature'], req.body)) {
