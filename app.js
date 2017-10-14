@@ -29,7 +29,7 @@ app.post('/callback', function(req, res) {
           return;
         }
         // テキストが送られてきた場合のみ返事をする
-        if ((req.body['events'][0]['type'] != 'message') || (req.body['events'][0]['message']['type'] != 'text')) {
+        if (!(req.body['events'][0]['type'] == 'message' || req.body['events'][0]['type'] == 'beacon')) {
           return;
         }
 
