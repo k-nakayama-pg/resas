@@ -6,6 +6,8 @@ var crypto = require("crypto");
 var async = require('async');
 var fs = require('fs');
 
+
+
 app.set('port', (process.env.PORT || 8000));
 // JSONの送信を許可
 app.use(bodyParser.urlencoded({
@@ -25,6 +27,10 @@ app.post('/callback', function(req, res) {
         if ((req.body['events'][0]['type'] != 'message') || (req.body['events'][0]['message']['type'] != 'text')) {
           return;
         }
+
+        if (req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
+          console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====')
+        }
         // 1対1のチャットの場合は相手のユーザ名で返事をする
         // グループチャットの場合はユーザ名が分からないので、「貴様ら」で返事をする
         if (req.body['events'][0]['source']['type'] == 'user') {
@@ -39,6 +45,7 @@ app.post('/callback', function(req, res) {
           };
           request.get(get_profile_options, function(error, response, body) {
             if (!error && response.statusCode == 200) {
+              console.log(body['displayName'] + ':' +user_id);
               callback(create_options(body['displayName'] + ':' + req.body['events'][0]['message']['text'], req.body));
             }
           });
