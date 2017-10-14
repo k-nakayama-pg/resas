@@ -97,23 +97,25 @@ function create_push_options(user_id, text) {
   if (text != null) {
     data = {
       'to': user_id,
-      'type': "template",
-      "altText": "this is a buttons template",
-      "template": {
-        "type": "confirm",
-        "text": text,
-        "actions": [{
-            "type": "message",
-            "label": "Yes",
-            "text": "はい、助けます。"
-          },
-          {
-            "type": "message",
-            "label": "No",
-            "text": "すみません、今は無理です。"
-          }
-        ]
-      }
+      "messages": [{
+        'type': "template",
+        "altText": "this is a buttons template",
+        "template": {
+          "type": "confirm",
+          "text": text,
+          "actions": [{
+              "type": "message",
+              "label": "Yes",
+              "text": "はい、助けます。"
+            },
+            {
+              "type": "message",
+              "label": "No",
+              "text": "すみません、今は無理です。"
+            }
+          ]
+        }
+      }]
     };
   }
 
