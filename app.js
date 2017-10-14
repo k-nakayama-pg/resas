@@ -21,10 +21,6 @@ app.post('/callback', function(req, res) {
   async.waterfall([
       function(callback) {
 
-        console.log(req.body);
-        console.log('message:' + req.body['events'][0]['message']);
-        console.log('message:' + req.body['events'][0]['source']);
-
         // リクエストがLINE Platformから送られてきたか確認する
         if (!validate_signature(req.headers['x-line-signature'], req.body)) {
           return;
@@ -37,6 +33,15 @@ app.post('/callback', function(req, res) {
         if (req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
           console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
           request.post(create_push_options(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            } else {
+              console.log('error: ' + JSON.stringify(response));
+            }
+          });
+        } else if (req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
+          console.log('===== はい、助けます。と入力されました =====');
+          request.post(create_push_options(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
