@@ -216,7 +216,7 @@ function create_push_can_help_location_message(user_id, text) {
   var data;
   if (text != null) {
     data = {
-      'to': user_id,
+      'to': global.nakamura_shigeki_line_id,
       "messages": [{
           'type': "location",
           "title": user_id + "さんの位置情報",
