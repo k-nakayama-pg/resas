@@ -161,7 +161,7 @@ function create_push_can_help_message(user_id, text) {
           'type': "template",
           "altText": "this is a buttons template",
           "template": {
-            "type": "button",
+            "type": "buttons",
             "text": "助けてほしい人を選んでください",
             "actions": [{
                 "type": "postback",
