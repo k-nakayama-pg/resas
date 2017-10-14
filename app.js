@@ -54,7 +54,7 @@ app.post('/callback', function(req, res) {
           };
           request.get(get_profile_options, function(error, response, body) {
             if (!error && response.statusCode == 200) {
-              console.log(body['displayName'] + ':' +user_id);
+              console.log(body['displayName'] + ':' + user_id);
               callback(create_options(body['displayName'] + ':' + req.body['events'][0]['message']['text'], req.body));
             }
           });
@@ -97,10 +97,23 @@ function create_push_options(user_id, text) {
   if (text != null) {
     data = {
       'to': user_id,
-      "messages": [{
-        "type": "text",
-        "text": text
-      }]
+      'type': "template",
+      "altText": "this is a buttons template",
+      "template": {
+        "type": "confirm",
+        "text": text,
+        "actions": [{
+            "type": "message",
+            "label": "Yes",
+            "text": "はい、助けます。"
+          },
+          {
+            "type": "message",
+            "label": "No",
+            "text": "すみません、今は無理です。"
+          }
+        ]
+      }
     };
   }
 
@@ -112,7 +125,7 @@ function create_push_options(user_id, text) {
     body: data
   };
 
-  console.log('===== options =====\n' + options );
+  console.log('===== options =====\n' + options);
   return options;
 }
 
