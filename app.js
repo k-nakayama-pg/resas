@@ -42,6 +42,15 @@ app.post('/callback', function(req, res) {
               console.log('error: ' + JSON.stringify(response));
             }
           });
+        } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('助ける_ビーコン_オン') != -1) {
+          console.log('===== 助ける_ビーコン_オンと入力されました =====');
+          request.post(create_push_tasukeru_message(global.nakamura_shigeki_line_id, "近くに 英語で道案内 についてサポートできる人が見つかりました。"), function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body);
+            } else {
+              console.log('error: ' + JSON.stringify(response));
+            }
+          });
         } else if (req.body['events'][0]['type'] == 'beacon') {
           console.log('===== 助けてほしい人が実機のビーコンをオンにしました =====');
           request.post(create_push_help_message(req.body['events'][0]["source"]["userId"], "近くに困っている人がいます。"), function(error, response, body) {
@@ -127,6 +136,41 @@ function create_push_help_message(user_id, text) {
       }]
     };
   }
+
+  // LINEの友達に助けてほしいメッセージリクエストを作成
+  function create_push_tasukeru_message(user_id, text) {
+    //ヘッダーを定義
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+    };
+
+    // 送信データ作成
+    var data;
+    if (text != null) {
+      data = {
+        'to': user_id,
+        "messages": [{
+          'type': "template",
+          "altText": "this is a buttons template",
+          "template": {
+            "type": "confirm",
+            "text": text,
+            "actions": [{
+                "type": "message",
+                "label": "助けてー",
+                "text": "助けてー"
+              },
+              {
+                "type": "message",
+                "label": "大丈夫！",
+                "text": "大丈夫！"
+              }
+            ]
+          }
+        }]
+      };
+    }
 
   //オプションを定義
   var options = {
