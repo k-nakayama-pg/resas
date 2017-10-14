@@ -32,7 +32,7 @@ app.post('/callback', function(req, res) {
 
         if (req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
           console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
-          request.post(create_push_options(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
+          request.post(create_push_help_message(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
@@ -41,7 +41,7 @@ app.post('/callback', function(req, res) {
           });
         } else if (req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
-          request.post(create_push_options(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
+          request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
             } else {
@@ -93,8 +93,8 @@ function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
 }
 
-// LINEに送るリクエストを作成
-function create_push_options(user_id, text) {
+// LINEの友達に助けてほしいメッセージリクエストを作成
+function create_push_help_message(user_id, text) {
   //ヘッダーを定義
   var headers = {
     'Content-Type': 'application/json',
@@ -125,6 +125,58 @@ function create_push_options(user_id, text) {
           ]
         }
       }]
+    };
+  }
+
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
+
+  console.log('===== options =====\n' + options);
+  return options;
+}
+
+// LINEの助けてくれる友達リストのメッセージリクエストを作成
+function create_push_can_help_message(user_id, text) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data;
+  if (text != null) {
+    data = {
+      'to': user_id,
+      "messages": [{
+          'type': "text",
+          'text': text
+        },
+        {
+          'type': "template",
+          "altText": "this is a buttons template",
+          "template": {
+            "type": "button",
+            "text": "助けてほしい人を選んでください",
+            "actions": [{
+                "type": "postback",
+                "label": "中山一哉さん, 男性, 25歳",
+                "data": "itemid=nakayama"
+              },
+              {
+                "type": "postback",
+                "label": "美樹子さん, 女性",
+                "data": "itemid=tanji"
+              }
+            ]
+          }
+        }
+      ]
     };
   }
 
