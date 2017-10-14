@@ -33,7 +33,7 @@ app.post('/callback', function(req, res) {
           return;
         }
 
-        if (req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
+        if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
           console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
           request.post(create_push_help_message(global.nakayama_kazuya_line_id, "近くに助けてほしい人がいます"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -51,7 +51,7 @@ app.post('/callback', function(req, res) {
               console.log('error: ' + JSON.stringify(response));
             }
           });
-        } else if (req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
+        } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('はい、助けます。') != -1) {
           console.log('===== はい、助けます。と入力されました =====');
           request.post(create_push_can_help_message(global.nakamura_shigeki_line_id, "助けてくれる人がみつかりました"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -60,7 +60,7 @@ app.post('/callback', function(req, res) {
               console.log('error: ' + JSON.stringify(response));
             }
           });
-        } else if (req.body['events'][0]['postback'] != null) {
+        } else if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['postback'] != null) {
           console.log('===== 助けてほしい人に選ばれました =====');
           request.post(create_push_can_help_location_message("中山一哉", ""), function(error, response, body) {
             if (!error && response.statusCode == 200) {
