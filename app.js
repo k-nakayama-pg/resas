@@ -162,7 +162,7 @@ function create_push_can_help_message(user_id, text) {
           "altText": "this is a buttons template",
           "template": {
             "type": "buttons",
-            "text": "近くのサポートしてくれる人",
+            "text": "近くでサポートしてくれる人",
             "actions": [{
                 "type": "postback",
                 "label": "中山一哉さん, 男性, 25歳",
