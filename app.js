@@ -34,7 +34,7 @@ app.post('/callback', function(req, res) {
         }
 
         if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('助けてほしい人_ビーコン_オン') != -1) {
-          console.log('===== 助けてほしい人_ビーコン_オンと入力されました =====');
+          console.log('===== 助けてほしい人_ビーコン_オンと入力されましたa =====');
           request.post(create_push_help_message(global.nakayama_kazuya_line_id, "近くに困っている人がいます。"), function(error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body);
