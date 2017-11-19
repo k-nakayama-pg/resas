@@ -68,7 +68,7 @@ function validate_signature(signature, body) {
 }
 
 // LINEの友達にtextをpush
-function create_push_message(user_id) {
+function create_push_kusuri_message(user_id) {
   //ヘッダーを定義
   var headers = {
     'Content-Type': 'application/json',
