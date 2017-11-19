@@ -23,21 +23,23 @@ app.post('/callback', function(req, res) {
       if (!validate_signature(req.headers['x-line-signature'], req.body)) {
         return;
       }
-      // テキストが送られてきた場合のみ返事をする
-      if ((req.body['events'][0]['type'] != 'message') || (req.body['events'][0]['message']['type'] != 'text')) {
+      // beaconかテキストが送られてきた場合のみ返事をする
+      if (!(req.body['events'][0]['type'] == 'message' || req.body['events'][0]['type'] == 'beacon')) {
         return;
       }
 
-      // beaconが検知したときの仮想処理
-      if (req.body['events'][0]['type'] == 'message' && req.body['events'][0]['message']['text'].indexOf('ビーコン_オン') != -1) {
-        console.log('===== ビーコン_オン と入力されました =====');
-        request.post(create_push_message(global.nakayama_kazuya_line_id, "近くに困っている人がいます。"), function(error, response, body) {
-          if (!error && response.statusCode == 200) {
-            console.log(body);
-          } else {
-            console.log('error: ' + JSON.stringify(response));
-          }
-        });
+      // beaconが検知したときの処理
+      if (req.body['events'][0]['message']['text'].indexOf('くっころ') != -1) {
+        //      if (req.body['events'][0]['type'] == 'beacon') {
+        //         console.log('===== enter beacon!! =====');
+        //         request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
+        //           if (!error && response.statusCode == 200) {
+        //             console.log(body);
+        //           } else {
+        //             console.log('error: ' + JSON.stringify(response));
+        //           }
+        //         });
+        console.log(req.body['events'][0]['source']['userId']);
       }
     },
   ]);
@@ -53,7 +55,7 @@ function validate_signature(signature, body) {
 }
 
 // LINEの友達にtextをpush
-function create_push_message(user_id, text) {
+function create_push_message(user_id, user_name) {
   //ヘッダーを定義
   var headers = {
     'Content-Type': 'application/json',
@@ -66,24 +68,33 @@ function create_push_message(user_id, text) {
     data = {
       'to': user_id,
       "messages": [{
-        'type': "template",
-        "altText": "this is a buttons template",
-        "template": {
-          "type": "confirm",
-          "text": text,
-          "actions": [{
-              "type": "message",
-              "label": "任せて！",
-              "text": "任せて！"
-            },
-            {
-              "type": "message",
-              "label": "今無理。。。",
-              "text": "今無理。。。"
-            }
-          ]
+          'type': "text",
+          'text': user_name + "さんのご自宅に何か違和感はありませんか？"
+        },
+        {
+          'type': "text",
+          'text': "洗濯物がほしっぱなしだったり、郵便受けがいっぱいだり、植木の手入れがされていなかったりしませんか？"
+        },
+        {
+          'type': "template",
+          "altText": "this is a buttons template",
+          "template": {
+            "type": "confirm",
+            "text": "違和感はありませんか？",
+            "actions": [{
+                "type": "message",
+                "label": "大丈夫！",
+                "text": "大丈夫！"
+              },
+              {
+                "type": "message",
+                "label": "違和感があります",
+                "text": "違和感があります"
+              }
+            ]
+          }
         }
-      }]
+      ]
     };
   }
 
