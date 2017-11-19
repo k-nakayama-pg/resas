@@ -29,8 +29,8 @@ app.post('/callback', function(req, res) {
       }
 
       // beaconが検知したときの処理
-      if (req.body['events'][0]['message']['text'].indexOf('beacon') != -1) {
-        //if (req.body['events'][0]['type'] == 'beacon') {
+      //if (req.body['events'][0]['message']['text'].indexOf('beacon') != -1) {
+      if (req.body['events'][0]['type'] == 'beacon') {
         console.log('===== enter beacon!! =====');
         request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
           if (!error && response.statusCode == 200) {
