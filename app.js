@@ -30,7 +30,7 @@ app.post('/callback', function(req, res) {
 
       // beaconが検知したときの処理
       if (req.body['events'][0]['message']['text'].indexOf('beacon') != -1) {
-      //if (req.body['events'][0]['type'] == 'beacon') {
+        //if (req.body['events'][0]['type'] == 'beacon') {
         console.log('===== enter beacon!! =====');
         request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
           if (!error && response.statusCode == 200) {
@@ -63,40 +63,37 @@ function create_push_message(user_id, user_name) {
   };
 
   // 送信データ作成
-  var data;
-  if (text != null) {
-    data = {
-      'to': user_id,
-      "messages": [{
-          'type': "text",
-          'text': user_name + "さんのご自宅に何か違和感はありませんか？"
-        },
-        {
-          'type': "text",
-          'text': "洗濯物がほしっぱなしだったり、郵便受けがいっぱいだり、植木の手入れがされていなかったりしませんか？"
-        },
-        {
-          'type': "template",
-          "altText": "this is a buttons template",
-          "template": {
-            "type": "confirm",
-            "text": "違和感はありませんか？",
-            "actions": [{
-                "type": "message",
-                "label": "大丈夫！",
-                "text": "大丈夫！"
-              },
-              {
-                "type": "message",
-                "label": "違和感があります",
-                "text": "違和感があります"
-              }
-            ]
-          }
+  var data = {
+    'to': user_id,
+    "messages": [{
+        'type': "text",
+        'text': user_name + "さんのご自宅に何か違和感はありませんか？"
+      },
+      {
+        'type': "text",
+        'text': "洗濯物がほしっぱなしだったり、郵便受けがいっぱいだり、植木の手入れがされていなかったりしませんか？"
+      },
+      {
+        'type': "template",
+        "altText": "this is a buttons template",
+        "template": {
+          "type": "confirm",
+          "text": "違和感はありませんか？",
+          "actions": [{
+              "type": "message",
+              "label": "大丈夫！",
+              "text": "大丈夫！"
+            },
+            {
+              "type": "message",
+              "label": "違和感があります",
+              "text": "違和感があります"
+            }
+          ]
         }
-      ]
-    };
-  }
+      }
+    ]
+  };
 
   //オプションを定義
   var options = {
