@@ -54,6 +54,18 @@ app.post('/callback', function(req, res) {
         });
         //console.log(req.body['events'][0]['source']['userId']);
       }
+      else if (req.body['events'][0]['message']['text'].indexOf('違和感あり') != -1) {
+        //if (req.body['events'][0]['type'] == 'beacon') {
+        console.log('===== enter daijobu!! =====');
+        request.post(create_push_thx_message(global.nakayama_kazuya_line_id), function(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body);
+          } else {
+            console.log('error: ' + JSON.stringify(response));
+          }
+        });
+        //console.log(req.body['events'][0]['source']['userId']);
+      }
     },
   ]);
 });
@@ -80,7 +92,7 @@ function create_push_kusuri_message(user_id) {
     'to': user_id,
     "messages": [{
         'type': "text",
-        'text': "回答ありがとうございます！"
+        'text': "ご報告ありがとうございます！"
       },
       {
         'type': "template",
@@ -144,7 +156,7 @@ function create_push_message(user_id, user_name) {
         'type': "template",
         "altText": "this is a buttons template",
         "template": {
-          "type": "confirm",
+          "type": "buttons",
           "text": "違和感はありませんか？",
           "actions": [{
               "type": "message",
@@ -158,6 +170,36 @@ function create_push_message(user_id, user_name) {
             }
           ]
         }
+      }
+    ]
+  };
+
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
+
+  console.log('===== options =====\n' + options);
+  return options;
+}
+
+// LINEの友達にtextをpush
+function create_push_txh_message(user_id) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data = {
+    'to': user_id,
+    "messages": [{
+        'type': "text",
+        'text': "ご報告ありがとうございます。巡回いたします。"
       }
     ]
   };
