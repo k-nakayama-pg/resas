@@ -6,7 +6,7 @@ var crypto = require("crypto");
 var async = require('async');
 var fs = require('fs');
 
-global.nakayama_kazuya_line_id = 'U2aca57e8b1a096a56b1199ae5311f7e5';
+global.nakayama_kazuya_line_id = 'U46c1cff311cfb69c050a7ae2f1abd18d';
 
 app.set('port', (process.env.PORT || 8000));
 // JSONの送信を許可
@@ -29,17 +29,17 @@ app.post('/callback', function(req, res) {
       }
 
       // beaconが検知したときの処理
-      if (req.body['events'][0]['message']['text'].indexOf('くっころ') != -1) {
-        //      if (req.body['events'][0]['type'] == 'beacon') {
-        //         console.log('===== enter beacon!! =====');
-        //         request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
-        //           if (!error && response.statusCode == 200) {
-        //             console.log(body);
-        //           } else {
-        //             console.log('error: ' + JSON.stringify(response));
-        //           }
-        //         });
-        console.log(req.body['events'][0]['source']['userId']);
+      if (req.body['events'][0]['message']['text'].indexOf('beacon') != -1) {
+      //if (req.body['events'][0]['type'] == 'beacon') {
+        console.log('===== enter beacon!! =====');
+        request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body);
+          } else {
+            console.log('error: ' + JSON.stringify(response));
+          }
+        });
+        //console.log(req.body['events'][0]['source']['userId']);
       }
     },
   ]);
