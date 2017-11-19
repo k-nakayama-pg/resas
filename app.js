@@ -41,6 +41,19 @@ app.post('/callback', function(req, res) {
         });
         //console.log(req.body['events'][0]['source']['userId']);
       }
+      // beaconが検知したときの処理
+      else if (req.body['events'][0]['message']['text'].indexOf('大丈夫！') != -1) {
+        //if (req.body['events'][0]['type'] == 'beacon') {
+        console.log('===== enter daijobu!! =====');
+        request.post(create_push_kusuri_message(global.nakayama_kazuya_line_id), function(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body);
+          } else {
+            console.log('error: ' + JSON.stringify(response));
+          }
+        });
+        //console.log(req.body['events'][0]['source']['userId']);
+      }
     },
   ]);
 });
@@ -52,6 +65,60 @@ app.listen(app.get('port'), function() {
 // 署名検証
 function validate_signature(signature, body) {
   return signature == crypto.createHmac('sha256', process.env.LINE_CHANNEL_SECRET).update(new Buffer(JSON.stringify(body), 'utf8')).digest('base64');
+}
+
+// LINEの友達にtextをpush
+function create_push_message(user_id) {
+  //ヘッダーを定義
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer {' + process.env.LINE_CHANNEL_ACCESS_TOKEN + '}',
+  };
+
+  // 送信データ作成
+  var data = {
+    'to': user_id,
+    "messages": [{
+        'type': "text",
+        'text': "回答ありがとうございます！"
+      },
+      {
+        'type': "template",
+        "altText": "this is a buttons template",
+        "template": {
+          "type": "buttons",
+          "text": "ちなみに、お薬を今日ちゃんと飲まれてるかって分かりますか？",
+          "actions": [{
+              "type": "message",
+              "label": "飲んでたよ！",
+              "text": "飲んでたよ！"
+            },
+            {
+              "type": "message",
+              "label": "飲んでないみたい。。。",
+              "text": "飲んでないみたい。。。"
+            },
+            {
+              "type": "message",
+              "label": "分かりません。",
+              "text": "分かりません。"
+            }
+          ]
+        }
+      }
+    ]
+  };
+
+  //オプションを定義
+  var options = {
+    url: 'https://api.line.me/v2/bot/message/push',
+    headers: headers,
+    json: true,
+    body: data
+  };
+
+  console.log('===== options =====\n' + options);
+  return options;
 }
 
 // LINEの友達にtextをpush
@@ -86,8 +153,8 @@ function create_push_message(user_id, user_name) {
             },
             {
               "type": "message",
-              "label": "違和感があります",
-              "text": "違和感があります"
+              "label": "違和感あり",
+              "text": "違和感あり"
             }
           ]
         }
