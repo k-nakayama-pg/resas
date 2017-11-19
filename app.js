@@ -56,7 +56,7 @@ app.post('/callback', function(req, res) {
       }
       else if (req.body['events'][0]['message']['text'].indexOf('違和感あり') != -1) {
         //if (req.body['events'][0]['type'] == 'beacon') {
-        console.log('===== enter daijobu!! =====');
+        console.log('===== enter iwakan!! =====');
         request.post(create_push_thx_message(global.nakayama_kazuya_line_id), function(error, response, body) {
           if (!error && response.statusCode == 200) {
             console.log(body);
@@ -187,7 +187,7 @@ function create_push_message(user_id, user_name) {
 }
 
 // LINEの友達にtextをpush
-function create_push_txh_message(user_id) {
+function create_push_thx_message(user_id) {
   //ヘッダーを定義
   var headers = {
     'Content-Type': 'application/json',
