@@ -46,7 +46,7 @@ app.post('/callback', function(req, res) {
 
       // beaconが検知したときの処理
       else if (req.body['events'][0]['message']['text'].indexOf('beacon') != -1) {
-      //else if (req.body['events'][0]['type'] == 'beacon') {
+        //else if (req.body['events'][0]['type'] == 'beacon') {
         console.log('===== enter beacon!! =====');
         request.post(create_push_message(global.nakayama_kazuya_line_id, "中山 一哉"), function(error, response, body) {
           if (!error && response.statusCode == 200) {
@@ -69,11 +69,30 @@ app.post('/callback', function(req, res) {
           }
         });
         //console.log(req.body['events'][0]['source']['userId']);
-      }
-      else if (req.body['events'][0]['message']['text'].indexOf('違和感あり') != -1) {
+      } else if (req.body['events'][0]['message']['text'].indexOf('違和感あり') != -1) {
         //if (req.body['events'][0]['type'] == 'beacon') {
         console.log('===== enter iwakan!! =====');
         request.post(create_push_thx_message(global.nakayama_kazuya_line_id), function(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body);
+          } else {
+            console.log('error: ' + JSON.stringify(response));
+          }
+        });
+        //console.log(req.body['events'][0]['source']['userId']);
+      } else if (req.body['events'][0]['message']['text'].indexOf('飲んでたよ！') != -1) {
+        //if (req.body['events'][0]['type'] == 'beacon') {
+        console.log('===== enter nondeta!! =====');
+        var options = {
+          url: 'http://52.237.72.13:8000/',
+          json: true,
+          body: {
+            time: "2017/11/19 17:30",
+            id: 9952239,
+            value: 1
+          }
+        };
+        request.post(options, function(error, response, body) {
           if (!error && response.statusCode == 200) {
             console.log(body);
           } else {
@@ -214,10 +233,9 @@ function create_push_thx_message(user_id) {
   var data = {
     'to': user_id,
     "messages": [{
-        'type': "text",
-        'text': "ご報告ありがとうございます。巡回いたします。"
-      }
-    ]
+      'type': "text",
+      'text': "ご報告ありがとうございます。巡回いたします。"
+    }]
   };
 
   //オプションを定義
