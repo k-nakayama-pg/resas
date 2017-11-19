@@ -19,6 +19,8 @@ app.use(bodyParser.json());
 app.post('/callback', function(req, res) {
   async.waterfall([
     function(callback) {
+
+      console.log("リクエスト");
       // リクエストがLINE Platformから送られてきたか確認する
       if (!validate_signature(req.headers['x-line-signature'], req.body)) {
         return;
